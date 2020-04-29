@@ -1,0 +1,6 @@
+baiduMap:
+  path: c:\map\
+server:
+  port: 8091
+
+
