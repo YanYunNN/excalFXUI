@@ -38,11 +38,13 @@ public class ExcelApplicationTests {
     @Test
     public void readMap1() throws FileNotFoundException {
         File file = new File("c:/map/示例分班表.xls");
-
+        //自适应excel类型
+        String suffix = file.getName().split("\\.")[1];
+        ExcelTypeEnum excelType = "xls".equals(suffix) ? ExcelTypeEnum.XLS : ExcelTypeEnum.XLSX;
         //读Excel
         FileInputStream inputStream = new FileInputStream(file);
         AnalysisEventListener listener = new ExcelListener();
-        ExcelReader excelReader = new ExcelReader(inputStream, ExcelTypeEnum.XLS, null, listener);
+        ExcelReader excelReader = new ExcelReader(inputStream, excelType, null, listener);
         excelReader.read(new Sheet(1, 1, UserInfo.class));
         List<UserInfo> datas = ExcelListener.datas;
 
@@ -57,10 +59,10 @@ public class ExcelApplicationTests {
         List<List<UserInfo>> subLists = ListUtil.averageList(datas, groupNum);
         //写Excel
         OutputStream out = new FileOutputStream("c:/map/分班表.xls");
-        ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLS);
+        ExcelWriter writer = new ExcelWriter(out, excelType);
         for (int i = 0; i < groupNum; i++) {
             Sheet sheet = new Sheet(i + 1, 0, UserInfo.class);
-            sheet.setSheetName("名单".concat(String.valueOf(i+1)));
+            sheet.setSheetName("名单".concat(String.valueOf(i + 1)));
             writer.write(subLists.get(i), sheet);
         }
         writer.finish();

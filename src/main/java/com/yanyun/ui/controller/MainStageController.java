@@ -58,11 +58,6 @@ public class MainStageController implements Initializable {
                 new FileChooser.ExtensionFilter("XLS", "*.xls"), new FileChooser.ExtensionFilter("XLSX", "*.xlsx"));
         file = fileChooser.showOpenDialog(selectFile);
         if (file == null) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("错误！");
-            alert.setContentText("请您上传一个正确的Excel文件！");
-            alert.showAndWait();
         } else {
             showFile.setVisible(true);
             showFile.setAlignment(Pos.CENTER_RIGHT);

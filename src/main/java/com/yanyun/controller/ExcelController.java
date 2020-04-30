@@ -3,13 +3,14 @@ package com.yanyun.controller;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.metadata.*;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.yanyun.entity.RestResponse;
 import com.yanyun.entity.UserInfo;
 import com.yanyun.utiils.ExcelListener;
 import com.yanyun.utiils.ListUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.usermodel.IndexedColors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,9 +26,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
-@RequestMapping("/map")
+@RequestMapping("/excel")
 @Slf4j
-public class MapController {
+public class ExcelController {
     @Value("${baiduMap.path}")
     private String path;
 
@@ -61,11 +62,13 @@ public class MapController {
         if (groupNum == null || groupNum == 0) {
             return RestResponse.bad(-2, "请输入分组数！");
         }
-
+        //自适应excel类型
+        String suffix = str[1];
+        ExcelTypeEnum excelType = "xls".equals(suffix) ? ExcelTypeEnum.XLS : ExcelTypeEnum.XLSX;
         //读Excel
         InputStream inputStream = file.getInputStream();
         AnalysisEventListener listener = new ExcelListener();
-        ExcelReader excelReader = new ExcelReader(inputStream, ExcelTypeEnum.XLS, null, listener);
+        ExcelReader excelReader = new ExcelReader(inputStream, excelType, null, listener);
         excelReader.read(new Sheet(1, 1, UserInfo.class));
         List<UserInfo> datas = ExcelListener.datas;
 
@@ -84,7 +87,7 @@ public class MapController {
             response.setHeader("Content-disposition", String.format("attachment;filename=%s", URLEncoder.encode(filename, "UTF-8")));
             //写Excel
             OutputStream out = new BufferedOutputStream(response.getOutputStream());
-            ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLS);
+            ExcelWriter writer = new ExcelWriter(out, excelType);
             for (int i = 0; i < groupNum; i++) {
                 Sheet sheet = new Sheet(i + 1, 0, UserInfo.class);
                 sheet.setSheetName("名单".concat(String.valueOf(i + 1)));

@@ -19,7 +19,7 @@ public class UserInfo extends BaseRowModel implements Cloneable {
      * index: 列的号, 0表示第一列
      */
     @ExcelProperty(value = "编号", index = 0)
-    private int id;
+    private String id;
 
     @ExcelProperty(value = "姓名", index = 1)
     private String name;

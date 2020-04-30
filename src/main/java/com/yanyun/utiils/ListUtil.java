@@ -92,10 +92,13 @@ public class ListUtil {
     }
 
     public static void outputExcel(File inFile, int groupNum, String outFile) throws FileNotFoundException {
+        //自适应excel类型
+        String suffix = inFile.getName().split("\\.")[1];
+        ExcelTypeEnum excelType = "xls".equals(suffix) ? ExcelTypeEnum.XLS : ExcelTypeEnum.XLSX;
         //读Excel
         FileInputStream inputStream = new FileInputStream(inFile);
         AnalysisEventListener listener = new ExcelListener();
-        ExcelReader excelReader = new ExcelReader(inputStream, ExcelTypeEnum.XLS, null, listener);
+        ExcelReader excelReader = new ExcelReader(inputStream, excelType, null, listener);
         excelReader.read(new Sheet(1, 1, UserInfo.class));
         List<UserInfo> datas = ExcelListener.datas;
 
@@ -110,7 +113,7 @@ public class ListUtil {
 
         //写Excel
         OutputStream out = new FileOutputStream(outFile);
-        ExcelWriter writer = new ExcelWriter(out, ExcelTypeEnum.XLS);
+        ExcelWriter writer = new ExcelWriter(out, excelType);
         for (int i = 0; i < groupNum; i++) {
             Sheet sheet = new Sheet(i + 1, 0, UserInfo.class);
             sheet.setSheetName("名单".concat(String.valueOf(i + 1)));
