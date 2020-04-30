@@ -58,6 +58,7 @@ public class MainStageController implements Initializable {
                 new FileChooser.ExtensionFilter("XLS", "*.xls"), new FileChooser.ExtensionFilter("XLSX", "*.xlsx"));
         file = fileChooser.showOpenDialog(selectFile);
         if (file == null) {
+            showFile.setText("");
         } else {
             showFile.setVisible(true);
             showFile.setAlignment(Pos.CENTER_RIGHT);
@@ -87,7 +88,17 @@ public class MainStageController implements Initializable {
                 alert.showAndWait();
                 throw new RuntimeException("error num");
             }
-            log.info("groupNum:{}", groupNum.getText());
+            log.info("btnOnSubmit:{error num}", groupNum.getText());
+
+            if (file == null) {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText("错误！");
+                alert.setContentText("请您先选择Excel文件！");
+                alert.showAndWait();
+                throw new RuntimeException("error file");
+            }
+            log.info("btnOnSubmit:{error file}");
 
             //保存分组文件
             String saveFilePath = saveFile(file, num);
